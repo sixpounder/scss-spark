@@ -47,7 +47,7 @@ if (!function_exists('cache_scss')) {
 		$d = dir($dir);
 		$files = '';
 		while (false !== ($file = $d->read())) {
-			if (preg_match('/(\.scss)$/u', $file)) {
+			if (preg_match('/(\.css)$/u', $file)) {
 				$file_info = get_file_info($dir.'/'.$file, 'date');
 				$files .= $file_info['date'];
 			}
@@ -61,7 +61,7 @@ if (!function_exists('cache_scss')) {
 		$cache_file = config_item('scss_cache_path').$cache_file_name;
 
 		// if the file exists, then no changes were made, skip the rendering process
-		if (!file_exists($cache_file)) {
+		if (!file_exists($cache_file) || config_item('cache_enabled') == FALSE) {
 			$css = render_scss($path, $cache_file);
 		}
 
@@ -89,6 +89,7 @@ if (!function_exists('cache_scss')) {
 if (!function_exists('render_scss')) {
 	function render_scss($scss_file, $output_file=false, $scss_parameters=null) {
 		
+		log_message('debug', 'SCSS: rendering scss ' . $scss_file);
 		// check the output folder exists and create it if needed
 		if ($output_file) {
 			$dir = dirname($output_file);
